@@ -4,6 +4,7 @@ from .forms import *
 from .models import *
 from django.http import *
 from django.shortcuts import *
+from django.contrib.auth.models import User
 
 
 
@@ -35,23 +36,15 @@ def PrimerTests(HttpRequest):
 	return render(HttpRequest, "TestProject/tests.html",{"tests": tests})
 
 def TestsUser(HttpRequest, LoginUser):
-	try:
-		user = auth.user.objects.get(username = LoginUser)
-	except:
-		HttpResponseNotFound("Not found!")
-	try:
-		UserTest = TestPerson.objects.filter(id = user.id).values()
-	except:
-		return HttpResponseServerError("Server error")	
-	TestUser = []
-	try:
-		for test in UserTest:
-			TestUser.append(Test.objects.values("id", "Name", "DateActivate", "Time").get(id = test["test_id"]))
-	except:
-		HttpResponseNotFound("Not found")
+	user = User.objects.get(id = LoginUser)
+	UserTest = TestPerson.objects.filter(Person = user)
+	mass = []
+	for i in UserTest:
+		mass.append(Test.objects.get(id = i.Test_id))
+	
 	return render(HttpRequest, "TestProject/profile.html",
                   {
-                      "TestUser": TestUser
+                      "TestUser": mass
                   })
 
 					
