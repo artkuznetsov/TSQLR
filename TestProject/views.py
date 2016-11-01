@@ -27,24 +27,14 @@ def registration_closed(request):
 def registration_complete(request):
     return render_to_response('registration/registration_complete.html')
 
-
-def PrimerTests(HttpRequest):
-	try:
-		tests = Test.objects.values("Name", "DateActivate", "Time")
-	except:
-		return HttpResponseServerError("Server error")
-	return render(HttpRequest, "TestProject/tests.html",{"tests": tests})
-
 def TestsUser(HttpRequest, LoginUser):
 	user = User.objects.get(id = LoginUser)
 	UserTest = TestPerson.objects.filter(Person = user)
 	mass = []
 	for i in UserTest:
 		mass.append(Test.objects.get(id = i.Test_id))
-	
+
 	return render(HttpRequest, "TestProject/profile.html",
                   {
-                      "TestUser": mass
+                      "AvailableTests": mass
                   })
-
-					
