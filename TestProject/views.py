@@ -1,10 +1,10 @@
 #from django.http import HttpResponse
 #from django.shortcuts import render_to_response
-#from .forms import *
+from .forms import *
 from .models import *
 from django.http import *
 from django.shortcuts import *
-from django.contrib.auth.models import User
+
 
 
 
@@ -26,9 +26,6 @@ def registration_closed(request):
 def registration_complete(request):
     return render_to_response('registration/registration_complete.html')
 
-def available_tests(request):
-	tests = Test.objects.values("Name","DateActivate","Time","Quest","TestPerson")
-	return render(request,'registration/login.html',{'tests': tests})
 
 def PrimerTests(HttpRequest):
 	try:
@@ -39,13 +36,13 @@ def PrimerTests(HttpRequest):
 
 def TestsUser(HttpRequest, LoginUser):
 	try:
-		user = User.objects.get(username = LoginUser)
+		user = auth.user.objects.get(username = LoginUser)
 	except:
 		HttpResponseNotFound("Not found!")
 	try:
 		UserTest = TestPerson.objects.filter(id = user.id).values()
-	except(Exception):
-		return HttpResponseServerError("Server error")
+	except:
+		return HttpResponseServerError("Server error")	
 	TestUser = []
 	try:
 		for test in UserTest:
@@ -57,4 +54,4 @@ def TestsUser(HttpRequest, LoginUser):
                       "TestUser": TestUser
                   })
 
-
+					
